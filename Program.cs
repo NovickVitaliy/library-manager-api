@@ -1,3 +1,4 @@
+using Carter;
 using library_manager_api.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +8,8 @@ builder.Services.AddOptions<MongoDbSettings>()
     .ValidateDataAnnotations()
     .ValidateOnStart();
 
+builder.Services.AddCarter();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -15,6 +18,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection(); 
+app.UseHttpsRedirection();
+
+app.MapCarter();
 
 app.Run();
