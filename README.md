@@ -4,4 +4,5 @@ Simple Library Manager API. Built using:
 - Carter
 - MongoDB
 - FluentValidations
+- Mapster
 - Vertical Slice Architecture
