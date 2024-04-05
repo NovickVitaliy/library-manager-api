@@ -8,5 +8,5 @@ public record MongoDbSettings(
     [Required] string BookCollectionName,
     [Required] string AuthorCollectionName)
 {
-    public const string Position = "MongoDbConnections";
+    public const string Position = "MongoDBSettings";
 };
