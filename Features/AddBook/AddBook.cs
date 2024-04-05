@@ -24,7 +24,7 @@ public static class AddBook
         ushort YearPublished,
         ICollection<string> Categories,
         ushort Pages) : ICommand<string>;
-    
+
     public sealed class AddBookCommandHandler : ICommandHandler<AddBookCommand, string>
     {
         private readonly IBookService _bookService;
@@ -39,23 +39,23 @@ public static class AddBook
             //validation
 
             var book = request.Adapt<Book>();
-
+            
             return await _bookService.AddBookAsync(book);
         }
     }
-    
-    public sealed class AddBookModule : ICarterModule
+}
+
+public sealed class AddBookModule : ICarterModule
+{
+    public void AddRoutes(IEndpointRouteBuilder app)
     {
-        public void AddRoutes(IEndpointRouteBuilder app)
+        app.MapPost("/books", async (AddBook.AddBookRequest addBookRequest, ISender sender) =>
         {
-            app.MapPost("/books", async (AddBookRequest addBookRequest, ISender sender) =>
-            {
-                var cmd = addBookRequest.Adapt<AddBookCommand>();
+            var cmd = addBookRequest.Adapt<AddBook.AddBookCommand>();
 
-                var bookId = await sender.Send(cmd);
+            var bookId = await sender.Send(cmd);
 
-                return Results.Created($"/products/{bookId}", bookId);
-            });
-        }
+            return Results.Created($"/products/{bookId}", bookId);
+        });
     }
 }

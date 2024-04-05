@@ -9,4 +9,10 @@ public record MongoDbSettings(
     [Required] string AuthorCollectionName)
 {
     public const string Position = "MongoDBSettings";
+
+    public MongoDbSettings() 
+        : this(null, null, null, null)
+    {
+        
+    }
 };
