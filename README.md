@@ -3,4 +3,5 @@ Simple Library Manager API. Built using:
 - MediatR
 - Carter
 - MongoDB
+- FluentValidations
 - Vertical Slice Architecture
