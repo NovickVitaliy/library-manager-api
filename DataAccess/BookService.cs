@@ -24,4 +24,9 @@ public class BookService : IBookService
         await _books.InsertOneAsync(book);
         return book.Id.ToString();
     }
+
+    public async Task<IEnumerable<Book>> GetAllBooksAsync()
+    {
+        return (await _books.FindAsync<Book>(_ => true)).ToList();
+    }
 }
