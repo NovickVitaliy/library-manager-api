@@ -2,6 +2,7 @@ using library_manager_api.DataAccess.Abstraction;
 using library_manager_api.Models;
 using library_manager_api.Options;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace library_manager_api.DataAccess;
@@ -28,5 +29,10 @@ public class BookService : IBookService
     public async Task<IEnumerable<Book>> GetAllBooksAsync()
     {
         return (await _books.FindAsync<Book>(_ => true)).ToList();
+    }
+
+    public async Task<Book?> GetBookByIdAsync(string id)
+    {
+        return await (await _books.FindAsync(t => t.Id == new ObjectId(id))).FirstOrDefaultAsync();
     }
 }
