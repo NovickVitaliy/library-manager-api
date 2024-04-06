@@ -98,6 +98,12 @@ public sealed class UpdateBookModule : ICarterModule
                     });
                 }
 
+                var book = await sender.Send(new GetBookById.GetBookById.GetBookByIdQuery(id));
+                if (book is null)
+                {
+                    return Results.NotFound();
+                }
+
                 var updateBookCommand = new UpdateBook.UpdateBookCommand(
                     id,
                     updateBookRequest.Title,
