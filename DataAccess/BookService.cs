@@ -11,7 +11,7 @@ public class BookService : IBookService
 {
     private readonly IMongoClient _mongoClient;
     private readonly IMongoCollection<Book> _books;
-    
+
     public BookService(IMongoClient mongoClient, IOptionsMonitor<MongoDbSettings> monitor)
     {
         _mongoClient = mongoClient;
@@ -34,5 +34,14 @@ public class BookService : IBookService
     public async Task<Book?> GetBookByIdAsync(string id)
     {
         return await (await _books.FindAsync(t => t.Id == new ObjectId(id))).FirstOrDefaultAsync();
+    }
+
+    public async Task UpdateBookAsync(string id, Book book)
+    {
+        await _books.FindOneAndReplaceAsync(t => t.Id == new ObjectId(id), book,
+            new()
+            {
+                IsUpsert = false
+            });
     }
 }

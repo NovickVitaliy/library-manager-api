@@ -64,7 +64,7 @@ public static class AddBook
 
         public async Task<string> Handle(AddBookCommand request, CancellationToken cancellationToken)
         {
-            var book = request.Adapt<Book>();
+            var book = request.Adapt<Models.Book>();
             
             return await _bookService.AddBookAsync(book);
         }
