@@ -13,9 +13,9 @@ public static class GetAllBooks
         string Title,
         string Description,
         string Language,
-        ushort YearPublished,
+        short YearPublished,
         IEnumerable<string> Categories,
-        ushort Pages);
+        short Pages);
 
     public sealed record GetAllBooksQuery : IQuery<IEnumerable<BookResponse>>;
     

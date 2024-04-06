@@ -16,9 +16,9 @@ public static class AddBook
         string Title,
         string Description,
         string Language,
-        ushort YearPublished,
+        short YearPublished,
         ICollection<string> Categories,
-        ushort Pages);
+        short Pages);
 
     public class AddBookValidator : AbstractValidator<AddBookRequest>
     {
@@ -34,14 +34,14 @@ public static class AddBook
                 .NotEmpty().WithMessage("{PropertyName} must be supplied");
 
             RuleFor(x => x.YearPublished)
-                .GreaterThan((ushort)0).WithMessage("{PropertyName} cannot be less than or equal to 0")
+                .GreaterThan((short)0).WithMessage("{PropertyName} cannot be less than or equal to 0")
                 .WithName("Year Published");
 
             RuleFor(x => x.Categories)
                 .NotEmpty().WithMessage("{PropertyName} cannot be empty");
 
             RuleFor(x => x.Pages)
-                .GreaterThan((ushort)0).WithMessage("{PropertyName} cannot be less than or equal to 0");
+                .GreaterThan((short)0).WithMessage("{PropertyName} cannot be less than or equal to 0");
         }
     }
 
@@ -49,9 +49,9 @@ public static class AddBook
         string Title,
         string Description,
         string Language,
-        ushort YearPublished,
+        short YearPublished,
         ICollection<string> Categories,
-        ushort Pages) : ICommand<string>;
+        short Pages) : ICommand<string>;
 
     public sealed class AddBookCommandHandler : ICommandHandler<AddBookCommand, string>
     {

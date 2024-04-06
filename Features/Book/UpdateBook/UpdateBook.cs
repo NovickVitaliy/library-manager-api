@@ -15,18 +15,18 @@ public static class UpdateBook
         string Title,
         string Description,
         string Language,
-        ushort YearPublished,
+        short YearPublished,
         IEnumerable<string> Categories,
-        ushort Pages);
+        short Pages);
 
     public sealed record UpdateBookCommand(
         string Id,
         string Title,
         string Description,
         string Language,
-        ushort YearPublished,
+        short YearPublished,
         IEnumerable<string> Categories,
-        ushort Pages) : ICommand;
+        short Pages) : ICommand;
 
     public sealed class UpdateBookRequestValidator : AbstractValidator<UpdateBookRequest>
     {
@@ -42,14 +42,14 @@ public static class UpdateBook
                 .NotEmpty().WithMessage("{PropertyName} must be supplied");
 
             RuleFor(x => x.YearPublished)
-                .GreaterThan((ushort)0).WithMessage("{PropertyName} cannot be less than or equal to 0")
+                .GreaterThan((short)0).WithMessage("{PropertyName} cannot be less than or equal to 0")
                 .WithName("Year Published");
 
             RuleFor(x => x.Categories)
                 .NotEmpty().WithMessage("{PropertyName} cannot be empty");
 
             RuleFor(x => x.Pages)
-                .GreaterThan((ushort)0).WithMessage("{PropertyName} cannot be less than or equal to 0");
+                .GreaterThan((short)0).WithMessage("{PropertyName} cannot be less than or equal to 0");
         }
     }
 
