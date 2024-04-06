@@ -44,4 +44,9 @@ public class BookService : IBookService
                 IsUpsert = false
             });
     }
+
+    public async Task DeleteBookAsync(string id)
+    {
+        await _books.DeleteOneAsync(t => t.Id == new ObjectId(id));
+    }
 }

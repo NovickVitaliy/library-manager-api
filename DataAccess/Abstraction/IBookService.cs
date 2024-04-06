@@ -8,4 +8,5 @@ public interface IBookService
     Task<IEnumerable<Book>> GetAllBooksAsync();
     Task<Book?> GetBookByIdAsync(string id);
     Task UpdateBookAsync(string id, Book book);
+    Task DeleteBookAsync(string id);
 }
