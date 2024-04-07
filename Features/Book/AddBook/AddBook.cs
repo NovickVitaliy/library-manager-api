@@ -84,10 +84,7 @@ public sealed class AddBookModule : ICarterModule
             {
                 var response = validationResult.Errors.ToValidationFailureApiResponse();
                 
-                return Results.Json(response, new JsonSerializerOptions()
-                {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                });
+                return Results.BadRequest(response);
             }
             
             var cmd = addBookRequest.Adapt<AddBook.AddBookCommand>();
