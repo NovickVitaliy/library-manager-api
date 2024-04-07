@@ -5,6 +5,7 @@ using library_manager_api.Models;
 using library_manager_api.Options;
 using Mapster;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace library_manager_api.DataAccess;
@@ -35,5 +36,12 @@ public class AuthorService : IAuthorService
     {
         return (await (await _authors.FindAsync("{}")).ToListAsync())
             .Select(a => a.Adapt<GetAllAuthors.AuthorResponse>());
+    }
+
+    public async Task<GetAllAuthors.AuthorResponse?> GetAuthorById(string id)
+    {
+        var filterById = Builders<Author>.Filter.Eq(x => x.Id, ObjectId.Parse(id));
+        return (await (await _authors.FindAsync(filterById)).ToListAsync())
+            .Select(a => a.Adapt<GetAllAuthors.AuthorResponse>()).FirstOrDefault();
     }
 }
