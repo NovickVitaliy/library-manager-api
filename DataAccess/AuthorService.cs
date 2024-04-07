@@ -1,5 +1,6 @@
 using library_manager_api.DataAccess.Abstraction;
 using library_manager_api.Features.Author.AddAuthor;
+using library_manager_api.Features.Author.GetAllAuthors;
 using library_manager_api.Models;
 using library_manager_api.Options;
 using Mapster;
@@ -28,5 +29,11 @@ public class AuthorService : IAuthorService
         await _authors.InsertOneAsync(author);
 
         return author.Id.ToString();
+    }
+
+    public async Task<IEnumerable<GetAllAuthors.AuthorResponse>> GetAllAuthorsAsync()
+    {
+        return (await (await _authors.FindAsync("{}")).ToListAsync())
+            .Select(a => a.Adapt<GetAllAuthors.AuthorResponse>());
     }
 }
