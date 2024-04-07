@@ -18,6 +18,7 @@ builder.Services.AddSingleton<IMongoClient>(sp =>
 });
 
 builder.Services.AddSingleton<IBookService, BookService>();
+builder.Services.AddSingleton<IAuthorService, AuthorService>();
 
 builder.Services.AddOptions<MongoDbSettings>()
     .Bind(builder.Configuration.GetSection(MongoDbSettings.Position))

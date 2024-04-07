@@ -10,4 +10,8 @@ public class Author : BaseModel
     public string LastName { get; set; } = default!;
 
     public DateOnly DateOfBirth { get; set; } = default!;
+
+    public string WorkSphere { get; set; } = default!;
+    
+    public string[] Genres { get; set; } = default!;
 }

@@ -4,6 +4,7 @@ using FluentValidation;
 using library_manager_api.ApiResponse;
 using library_manager_api.CQRS.Command;
 using library_manager_api.DataAccess.Abstraction;
+using library_manager_api.Extensions;
 using Mapster;
 using MediatR;
 
@@ -81,19 +82,8 @@ public sealed class AddBookModule : ICarterModule
 
             if (!validationResult.IsValid)
             {
-                var validationErrors = validationResult.Errors.GroupBy(
-                    x => x.PropertyName,
-                    x => x.ErrorMessage)
-                    .ToDictionary(
-                        x => x.Key, 
-                        x => x.ToList());
-                var response = new ValidationFailtureApiResponse()
-                {
-                    StatusCode = StatusCodes.Status400BadRequest,
-                    Description = "Validation Error",
-                    ValidationErrors = validationErrors 
-                };
-
+                var response = validationResult.Errors.ToValidationFailureApiResponse();
+                
                 return Results.Json(response, new JsonSerializerOptions()
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase
