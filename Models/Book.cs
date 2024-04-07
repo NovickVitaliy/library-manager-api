@@ -1,5 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Driver;
 
 namespace library_manager_api.Models;
 
@@ -16,4 +17,6 @@ public class Book : BaseModel
     public ICollection<string> Categories { get; set; } = default!;
 
     public short Pages { get; set; } = default!;
+    
+    public MongoDBRef AuthorId { get; set; } = default!;
 }
