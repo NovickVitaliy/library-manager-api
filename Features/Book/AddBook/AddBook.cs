@@ -4,10 +4,12 @@ using FluentValidation;
 using library_manager_api.ApiResponse;
 using library_manager_api.CQRS.Command;
 using library_manager_api.DataAccess.Abstraction;
+using library_manager_api.Exceptions;
 using library_manager_api.Exceptions.Author;
 using library_manager_api.Extensions;
 using Mapster;
 using MediatR;
+using ValidationException = library_manager_api.Exceptions.ValidationException;
 
 namespace library_manager_api.Features.Book.AddBook;
 
@@ -89,9 +91,7 @@ public sealed class AddBookModule : ICarterModule
 
             if (!validationResult.IsValid)
             {
-                var response = validationResult.Errors.ToValidationFailureApiResponse();
-
-                return Results.BadRequest(response);
+                throw new ValidationException(validationResult.Errors);
             }
 
             var cmd = addBookRequest.Adapt<AddBook.AddBookCommand>();

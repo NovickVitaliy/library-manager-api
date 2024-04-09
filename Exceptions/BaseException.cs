@@ -13,4 +13,6 @@ public abstract class BaseException : Exception
     }
 
     public abstract BaseApiResponse ToApiResponse();
+    
+    
 }

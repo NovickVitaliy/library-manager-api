@@ -17,7 +17,7 @@ public static class ApiResponseExtensions
         var response = new ValidationFailtureApiResponse()
         {
             StatusCode = StatusCodes.Status400BadRequest,
-            Description = "Validation Error",
+            Description = "Validation error occured",
             ValidationErrors = validationErrors 
         };
         

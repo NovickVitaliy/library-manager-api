@@ -48,7 +48,7 @@ app.UseExceptionHandler(appBuilder =>
         if (exceptionHandlerPathFeature?.Error is BaseException exception)
         {
             var apiResponse = exception.ToApiResponse();
-            var json = JsonSerializer.Serialize(apiResponse);
+            var json = apiResponse.ToJson();
 
             context.Response.StatusCode = apiResponse.StatusCode;
             await context.Response.WriteAsync(json);
