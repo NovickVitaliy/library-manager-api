@@ -53,4 +53,10 @@ public class AuthorService : IAuthorService
         await _authors.FindOneAndReplaceAsync(x => x.Id == ObjectId.Parse(updateAuthorCommand.Id), 
             replacement);
     }
+
+    public Task DeleteAuthorAsync(string requestId)
+    {
+        var filter = Builders<Author>.Filter.Eq(x => x.Id,ObjectId.Parse(requestId));
+        return _authors.FindOneAndDeleteAsync(filter);
+    }
 }

@@ -10,4 +10,5 @@ public interface IAuthorService
     Task<IEnumerable<GetAllAuthors.AuthorResponse>> GetAllAuthorsAsync();
     Task<GetAllAuthors.AuthorResponse?> GetAuthorByIdAsync(string id);
     Task UpdateAuthorAsync(UpdateAuthor.UpdateAuthorCommand updateAuthorCommand);
+    Task DeleteAuthorAsync(string requestId);
 }
