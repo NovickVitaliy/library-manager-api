@@ -20,7 +20,7 @@ public static class GetAuthorById
 
         public Task<GetAllAuthors.GetAllAuthors.AuthorResponse?> Handle(GetAuthorByIdQuery request, CancellationToken cancellationToken)
         {
-            return _authorService.GetAuthorById(request.Id);
+            return _authorService.GetAuthorByIdAsync(request.Id);
         }
     }
 }

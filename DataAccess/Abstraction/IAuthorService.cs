@@ -7,5 +7,5 @@ public interface IAuthorService
 {
     Task<string?> AddAuthorAsync(AddAuthor.AddAuthorCommand addAuthorCommand);
     Task<IEnumerable<GetAllAuthors.AuthorResponse>> GetAllAuthorsAsync();
-    Task<GetAllAuthors.AuthorResponse?> GetAuthorById(string id);
+    Task<GetAllAuthors.AuthorResponse?> GetAuthorByIdAsync(string id);
 }

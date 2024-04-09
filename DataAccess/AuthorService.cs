@@ -38,7 +38,7 @@ public class AuthorService : IAuthorService
             .Select(a => a.Adapt<GetAllAuthors.AuthorResponse>());
     }
 
-    public async Task<GetAllAuthors.AuthorResponse?> GetAuthorById(string id)
+    public async Task<GetAllAuthors.AuthorResponse?> GetAuthorByIdAsync(string id)
     {
         var filterById = Builders<Author>.Filter.Eq(x => x.Id, ObjectId.Parse(id));
         return (await (await _authors.FindAsync(filterById)).ToListAsync())

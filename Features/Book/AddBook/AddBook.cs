@@ -4,6 +4,7 @@ using FluentValidation;
 using library_manager_api.ApiResponse;
 using library_manager_api.CQRS.Command;
 using library_manager_api.DataAccess.Abstraction;
+using library_manager_api.Exceptions.Author;
 using library_manager_api.Extensions;
 using Mapster;
 using MediatR;
@@ -18,7 +19,7 @@ public static class AddBook
         string Language,
         short YearPublished,
         ICollection<string> Categories,
-        short Pages, 
+        short Pages,
         string AuthorId);
 
     public class AddBookValidator : AbstractValidator<AddBookRequest>
@@ -58,14 +59,20 @@ public static class AddBook
     public sealed class AddBookCommandHandler : ICommandHandler<AddBookCommand, string>
     {
         private readonly IBookService _bookService;
+        private readonly IAuthorService _authorService;
 
-        public AddBookCommandHandler(IBookService bookService)
+        public AddBookCommandHandler(IBookService bookService, IAuthorService authorService)
         {
             _bookService = bookService;
+            _authorService = authorService;
         }
 
         public async Task<string> Handle(AddBookCommand request, CancellationToken cancellationToken)
         {
+            var author = await _authorService.GetAuthorByIdAsync(request.AuthorId);
+            
+            if (author is null) throw new AuthorNotFoundException(request.AuthorId);
+            
             return await _bookService.AddBookAsync(request);
         }
     }
@@ -83,10 +90,10 @@ public sealed class AddBookModule : ICarterModule
             if (!validationResult.IsValid)
             {
                 var response = validationResult.Errors.ToValidationFailureApiResponse();
-                
+
                 return Results.BadRequest(response);
             }
-            
+
             var cmd = addBookRequest.Adapt<AddBook.AddBookCommand>();
 
             var bookId = await sender.Send(cmd);
