@@ -1,9 +1,13 @@
+using System.Text.Json;
 using Carter;
 using library_manager_api.DataAccess;
 using library_manager_api.DataAccess.Abstraction;
+using library_manager_api.Exceptions;
 using library_manager_api.Options;
 using library_manager_api.OtherConfiguration;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,8 +35,31 @@ builder.Services.AddMediatR(cfg =>
 });
 
 builder.Services.AddCarter();
+
 MapsterConfiguration.ConfigureMaps();
+
 var app = builder.Build();
+
+app.UseExceptionHandler(appBuilder =>
+{
+    appBuilder.Use(async (HttpContext context, RequestDelegate next) =>
+    {
+        var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+        if (exceptionHandlerPathFeature?.Error is BaseException exception)
+        {
+            var apiResponse = exception.ToApiResponse();
+            var json = JsonSerializer.Serialize(apiResponse);
+
+            context.Response.StatusCode = apiResponse.StatusCode;
+            await context.Response.WriteAsync(json);
+        }
+        else
+        {
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            await context.Response.WriteAsync("Internal Server Error");
+        }
+    });
+});
 
 app.MapCarter();
 
