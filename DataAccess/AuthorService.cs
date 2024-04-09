@@ -1,6 +1,7 @@
 using library_manager_api.DataAccess.Abstraction;
 using library_manager_api.Features.Author.AddAuthor;
 using library_manager_api.Features.Author.GetAllAuthors;
+using library_manager_api.Features.Author.UpdateAuthor;
 using library_manager_api.Models;
 using library_manager_api.Options;
 using Mapster;
@@ -20,7 +21,8 @@ public class AuthorService : IAuthorService
     {
         _mongoClient = mongoClient;
         _monitor = monitor;
-        _authors = mongoClient.GetDatabase(monitor.CurrentValue.DatabaseName).GetCollection<Author>(monitor.CurrentValue.AuthorCollectionName);
+        _authors = mongoClient.GetDatabase(monitor.CurrentValue.DatabaseName)
+            .GetCollection<Author>(monitor.CurrentValue.AuthorCollectionName);
     }
 
     public async Task<string?> AddAuthorAsync(AddAuthor.AddAuthorCommand addAuthorCommand)
@@ -43,5 +45,12 @@ public class AuthorService : IAuthorService
         var filterById = Builders<Author>.Filter.Eq(x => x.Id, ObjectId.Parse(id));
         return (await (await _authors.FindAsync(filterById)).ToListAsync())
             .Select(a => a.Adapt<GetAllAuthors.AuthorResponse>()).FirstOrDefault();
+    }
+
+    public async Task UpdateAuthorAsync(UpdateAuthor.UpdateAuthorCommand updateAuthorCommand)
+    {
+        var replacement = updateAuthorCommand.Adapt<Author>();
+        await _authors.FindOneAndReplaceAsync(x => x.Id == ObjectId.Parse(updateAuthorCommand.Id), 
+            replacement);
     }
 }
