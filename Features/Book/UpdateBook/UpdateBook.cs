@@ -39,9 +39,7 @@ public static class UpdateBook
 
         public async Task<Unit> Handle(UpdateBookCommand request, CancellationToken cancellationToken)
         {
-            var book = request.Adapt<Models.Book>();
-
-            await _bookService.UpdateBookAsync(request.Id, book);
+            await _bookService.UpdateBookAsync(request.Id, request);
 
             return Unit.Value;
         }

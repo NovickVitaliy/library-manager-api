@@ -30,7 +30,7 @@ public static class GetAllBooks
 
         public async Task<IEnumerable<BookResponse>> Handle(GetAllBooksQuery request, CancellationToken cancellationToken)
         {
-            return (await _bookService.GetAllBooksAsync()).Select(b => b.Adapt<BookResponse>());
+            return await _bookService.GetAllBooksAsync();
         }
     }
 }

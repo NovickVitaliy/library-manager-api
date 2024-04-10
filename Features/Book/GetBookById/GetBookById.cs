@@ -1,18 +1,17 @@
 using Carter;
 using library_manager_api.CQRS.Query;
 using library_manager_api.DataAccess.Abstraction;
-using Mapster;
 using MediatR;
 
-namespace library_manager_api.Features.GetBookById;
+namespace library_manager_api.Features.Book.GetBookById;
 
 public static class GetBookById
 {
     public sealed record GetBookByIdQuery(string Id)
-        : IQuery<GetAllBooks.GetAllBooks.BookResponse>;
+        : IQuery<GetAllBooks.GetAllBooks.BookResponse?>;
 
     public sealed class GetBookByIdQueryHandler
-        : IQueryHandler<GetBookByIdQuery, GetAllBooks.GetAllBooks.BookResponse>
+        : IQueryHandler<GetBookByIdQuery, GetAllBooks.GetAllBooks.BookResponse?>
     {
         private readonly IBookService _bookService;
 
@@ -21,9 +20,9 @@ public static class GetBookById
             _bookService = bookService;
         }
 
-        public async Task<GetAllBooks.GetAllBooks.BookResponse> Handle(GetBookByIdQuery request, CancellationToken cancellationToken)
+        public async Task<GetAllBooks.GetAllBooks.BookResponse?> Handle(GetBookByIdQuery request, CancellationToken cancellationToken)
         {
-            return (await _bookService.GetBookByIdAsync(request.Id)).Adapt<GetAllBooks.GetAllBooks.BookResponse>();
+            return await _bookService.GetBookByIdAsync(request.Id);
         }
     }
 }

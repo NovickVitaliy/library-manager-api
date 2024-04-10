@@ -1,5 +1,7 @@
 using library_manager_api.DataAccess.Abstraction;
 using library_manager_api.Features.Book.AddBook;
+using library_manager_api.Features.Book.UpdateBook;
+using library_manager_api.Features.GetAllBooks;
 using library_manager_api.Models;
 using library_manager_api.Options;
 using Mapster;
@@ -29,24 +31,26 @@ public class BookService : IBookService
         var book = addBookCommand.Adapt<Book>();
 
         book.AuthorId = new MongoDBRef(_monitor.CurrentValue.AuthorCollectionName, addBookCommand.AuthorId);
-        
+
         await _books.InsertOneAsync(book);
         return book.Id.ToString();
     }
 
-    public async Task<IEnumerable<Book>> GetAllBooksAsync()
+    public async Task<IEnumerable<GetAllBooks.BookResponse>> GetAllBooksAsync()
     {
-        return (await _books.FindAsync<Book>(_ => true)).ToList();
+        return (await (await _books.FindAsync<Book>(_ => true)).ToListAsync())
+            .Select(b => b.Adapt<GetAllBooks.BookResponse>());
     }
 
-    public async Task<Book?> GetBookByIdAsync(string id)
+    public async Task<GetAllBooks.BookResponse?> GetBookByIdAsync(string id)
     {
-        return await (await _books.FindAsync(t => t.Id == new ObjectId(id))).FirstOrDefaultAsync();
+        return (await (await _books.FindAsync(t => t.Id == new ObjectId(id))).FirstOrDefaultAsync())
+            .Adapt<GetAllBooks.BookResponse>();
     }
 
-    public async Task UpdateBookAsync(string id, Book book)
+    public async Task UpdateBookAsync(string id, UpdateBook.UpdateBookCommand book)
     {
-        await _books.FindOneAndReplaceAsync(t => t.Id == new ObjectId(id), book,
+        await _books.FindOneAndReplaceAsync(t => t.Id == new ObjectId(id), book.Adapt<Book>(),
             new()
             {
                 IsUpsert = false
