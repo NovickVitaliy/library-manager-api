@@ -52,3 +52,5 @@ C:\Users\User\Desktop\projects\library-manager-api\obj\Debug\net8.0\refint\libra
 C:\Users\User\Desktop\projects\library-manager-api\obj\Debug\net8.0\library-manager-api.pdb
 C:\Users\User\Desktop\projects\library-manager-api\obj\Debug\net8.0\library-manager-api.genruntimeconfig.cache
 C:\Users\User\Desktop\projects\library-manager-api\obj\Debug\net8.0\ref\library-manager-api.dll
+C:\Users\User\Desktop\projects\library-manager-api\bin\Debug\net8.0\FluentValidation.AspNetCore.dll
+C:\Users\User\Desktop\projects\library-manager-api\bin\Debug\net8.0\FluentValidation.DependencyInjectionExtensions.dll

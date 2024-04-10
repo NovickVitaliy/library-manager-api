@@ -28,7 +28,25 @@ public static class UpdateAuthor
             string[] Genres
         ) : ICommand;
     
-    public sealed class UpdateAuthorRequestValidator : AbstractValidator<UpdateAuthorRequest>
+    public sealed class UpdateAuthorCommandHandler : ICommandHandler<UpdateAuthorCommand>
+    {
+        private readonly IAuthorService _authorService;
+
+        public UpdateAuthorCommandHandler(IAuthorService authorService)
+        {
+            _authorService = authorService;
+        }
+
+        public async Task<Unit> Handle(UpdateAuthorCommand request, CancellationToken cancellationToken)
+        {
+            await _authorService.UpdateAuthorAsync(request);
+
+            return Unit.Value;
+        }
+    }
+}
+
+    public sealed class UpdateAuthorRequestValidator : AbstractValidator<UpdateAuthor.UpdateAuthorCommand>
     {
         public UpdateAuthorRequestValidator()
         {
@@ -49,25 +67,6 @@ public static class UpdateAuthor
                 .NotEmpty().WithMessage("{PropertyName} must be supplied");
         }
     }
-    
-    
-    public sealed class UpdateAuthorCommandHandler : ICommandHandler<UpdateAuthorCommand>
-    {
-        private readonly IAuthorService _authorService;
-
-        public UpdateAuthorCommandHandler(IAuthorService authorService)
-        {
-            _authorService = authorService;
-        }
-
-        public async Task<Unit> Handle(UpdateAuthorCommand request, CancellationToken cancellationToken)
-        {
-            await _authorService.UpdateAuthorAsync(request);
-
-            return Unit.Value;
-        }
-    }
-}
 
 public sealed class UpdateAuthorModule : ICarterModule
 {
@@ -75,13 +74,6 @@ public sealed class UpdateAuthorModule : ICarterModule
     {
         app.MapPut("/authors/{id}", async (string id, UpdateAuthor.UpdateAuthorRequest request, ISender sender) =>
         {
-            var validator = new UpdateAuthor.UpdateAuthorRequestValidator();
-            var result = await validator.ValidateAsync(request);
-            if (!result.IsValid)
-            {
-                throw new ValidationException(result.Errors);
-            }
-
             await sender.Send(new UpdateAuthor.UpdateAuthorCommand(
                 id,
                 request.FirstName,
@@ -91,7 +83,7 @@ public sealed class UpdateAuthorModule : ICarterModule
                 request.Genres
                 ));
 
-            return Results.NoContent();
+            return Results.Ok();
         });
     }
 }

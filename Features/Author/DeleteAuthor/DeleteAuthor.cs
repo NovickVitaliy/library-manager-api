@@ -8,7 +8,7 @@ namespace library_manager_api.Features.Author.DeleteAuthor;
 public static class DeleteAuthor
 {
     public sealed record DeleteAuthorCommand(string Id) : ICommand;
-    
+
     public sealed class DeleteAuthorCommandHandler : ICommandHandler<DeleteAuthorCommand>
     {
         private readonly IAuthorService _authorService;
@@ -31,7 +31,11 @@ public sealed class DeleteAuthorModule : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapDelete("/authors/{id}", async (string id, ISender sender) => 
-            await sender.Send(new DeleteAuthor.DeleteAuthorCommand(id)));
+        app.MapDelete("/authors/{id}", async (string id, ISender sender) =>
+        {
+            await sender.Send(new DeleteAuthor.DeleteAuthorCommand(id));
+
+            return Results.NoContent();
+        });
     }
 }

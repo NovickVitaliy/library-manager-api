@@ -26,28 +26,6 @@ public static class AddAuthor
         string[] Genres
     ) : ICommand<string>;
     
-    public sealed class AddAuthorRequestValidator : AbstractValidator<AddAuthorRequest>
-    {
-        public AddAuthorRequestValidator()
-        {
-            RuleFor(x => x.FirstName)
-                .NotEmpty().WithMessage("{PropertyName} must be supplied");
-
-            RuleFor(x => x.LastName)
-                .NotEmpty().WithMessage("{PropertyName} must be supplied");
-
-            RuleFor(x => x.DateOfBirth)
-                .NotEmpty().WithMessage("{PropertyName} must be supplied")
-                .GreaterThan(DateOnly.MinValue).WithMessage("{PropertyName} cannot be less than {ComparisonValue}");
-
-            RuleFor(x => x.WorkSphere)
-                .NotEmpty().WithMessage("{PropertyName} must be supplied");
-
-            RuleFor(x => x.Genres)
-                .NotEmpty().WithMessage("{PropertyName} must be supplied");
-        }
-    }
-    
     public sealed class AddAuthorCommandHandler : ICommandHandler<AddAuthorCommand, string>
     {
         private readonly IAuthorService _authorService;
@@ -64,21 +42,34 @@ public static class AddAuthor
     }
 }
 
+public sealed class AddAuthorRequestValidator : AbstractValidator<AddAuthor.AddAuthorCommand>
+{
+    public AddAuthorRequestValidator()
+    {
+        RuleFor(x => x.FirstName)
+            .NotEmpty().WithMessage("{PropertyName} must be supplied");
+
+        RuleFor(x => x.LastName)
+            .NotEmpty().WithMessage("{PropertyName} must be supplied");
+
+        RuleFor(x => x.DateOfBirth)
+            .NotEmpty().WithMessage("{PropertyName} must be supplied")
+            .GreaterThan(DateOnly.MinValue).WithMessage("{PropertyName} cannot be less than {ComparisonValue}");
+
+        RuleFor(x => x.WorkSphere)
+            .NotEmpty().WithMessage("{PropertyName} must be supplied");
+
+        RuleFor(x => x.Genres)
+            .NotEmpty().WithMessage("{PropertyName} must be supplied");
+    }
+}
+
 public sealed class AddAuthorModule : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         app.MapPost("/authors", async (AddAuthor.AddAuthorRequest addAuthorRequest, ISender sender) =>
         {
-            var addAuthorRequestValidator = new AddAuthor.AddAuthorRequestValidator();
-            var validationResult = await addAuthorRequestValidator.ValidateAsync(addAuthorRequest);
-            if (!validationResult.IsValid)
-            {
-                var response = validationResult.Errors.ToValidationFailureApiResponse();
-
-                return Results.BadRequest(response);
-            }
-
             var cmd = addAuthorRequest.Adapt<AddAuthor.AddAuthorCommand>();
 
             var result = await sender.Send(cmd);

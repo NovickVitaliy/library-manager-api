@@ -23,32 +23,7 @@ public static class AddBook
         ICollection<string> Categories,
         short Pages,
         string AuthorId);
-
-    public class AddBookValidator : AbstractValidator<AddBookRequest>
-    {
-        public AddBookValidator()
-        {
-            RuleFor(x => x.Title)
-                .NotEmpty().WithMessage("{PropertyName} must be supplied.");
-
-            RuleFor(x => x.Description)
-                .NotEmpty().WithMessage("{PropertyName} nust be supplied.");
-
-            RuleFor(x => x.Language)
-                .NotEmpty().WithMessage("{PropertyName} must be supplied");
-
-            RuleFor(x => x.YearPublished)
-                .GreaterThan((short)0).WithMessage("{PropertyName} cannot be less than or equal to 0")
-                .WithName("Year Published");
-
-            RuleFor(x => x.Categories)
-                .NotEmpty().WithMessage("{PropertyName} cannot be empty");
-
-            RuleFor(x => x.Pages)
-                .GreaterThan((short)0).WithMessage("{PropertyName} cannot be less than or equal to 0");
-        }
-    }
-
+    
     public sealed record AddBookCommand(
         string Title,
         string Description,
@@ -75,8 +50,33 @@ public static class AddBook
             
             if (author is null) throw new AuthorNotFoundException(request.AuthorId);
             
-            return await _bookService.AddBookAsync(request);
+            return (await _bookService.AddBookAsync(request))!;
         }
+    }
+}
+
+public class AddBookValidator : AbstractValidator<AddBook.AddBookCommand>
+{
+    public AddBookValidator()
+    {
+        RuleFor(x => x.Title)
+            .NotEmpty().WithMessage("{PropertyName} must be supplied.");
+
+        RuleFor(x => x.Description)
+            .NotEmpty().WithMessage("{PropertyName} must be supplied.");
+
+        RuleFor(x => x.Language)
+            .NotEmpty().WithMessage("{PropertyName} must be supplied");
+
+        RuleFor(x => x.YearPublished)
+            .GreaterThan((short)0).WithMessage("{PropertyName} cannot be less than or equal to 0")
+            .WithName("Year Published");
+
+        RuleFor(x => x.Categories)
+            .NotEmpty().WithMessage("{PropertyName} cannot be empty");
+
+        RuleFor(x => x.Pages)
+            .GreaterThan((short)0).WithMessage("{PropertyName} cannot be less than or equal to 0");
     }
 }
 
@@ -86,14 +86,6 @@ public sealed class AddBookModule : ICarterModule
     {
         app.MapPost("/books", async (AddBook.AddBookRequest addBookRequest, ISender sender) =>
         {
-            var validator = new AddBook.AddBookValidator();
-            var validationResult = await validator.ValidateAsync(addBookRequest);
-
-            if (!validationResult.IsValid)
-            {
-                throw new ValidationException(validationResult.Errors);
-            }
-
             var cmd = addBookRequest.Adapt<AddBook.AddBookCommand>();
 
             var bookId = await sender.Send(cmd);

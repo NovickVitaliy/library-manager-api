@@ -39,7 +39,11 @@ public sealed class GetAllBooksModule : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("/books", async (ISender sender) => 
-            Results.Json(await sender.Send(new GetAllBooks.GetAllBooksQuery())));
+        app.MapGet("/books", async (ISender sender) =>
+        {
+            var books = await sender.Send(new GetAllBooks.GetAllBooksQuery());
+
+            return Results.Json(books);
+        });
     }
 }

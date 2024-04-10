@@ -38,7 +38,11 @@ public sealed class GetAllAuthorsModule : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapGet("/authors", async (ISender sender) => 
-            await sender.Send(new GetAllAuthors.GetAllAuthorsQuery()));
+        app.MapGet("/authors", async (ISender sender) =>
+        {
+            var authors = await sender.Send(new GetAllAuthors.GetAllAuthorsQuery());
+           
+            return Results.Json(authors);
+        });
     }
 }

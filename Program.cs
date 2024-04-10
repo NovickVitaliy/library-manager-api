@@ -1,10 +1,13 @@
 using System.Text.Json;
 using Carter;
+using FluentValidation;
 using library_manager_api.DataAccess;
 using library_manager_api.DataAccess.Abstraction;
 using library_manager_api.Exceptions;
+using library_manager_api.MediatrBehaviours;
 using library_manager_api.Options;
 using library_manager_api.OtherConfiguration;
+using MediatR;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
@@ -21,6 +24,8 @@ builder.Services.AddSingleton<IMongoClient>(sp =>
     return new MongoClient(mongoDbOptions.ConnectionString);
 });
 
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+
 builder.Services.AddSingleton<IBookService, BookService>();
 builder.Services.AddSingleton<IAuthorService, AuthorService>();
 
@@ -33,6 +38,7 @@ builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
 });
+builder.Services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
 
 builder.Services.AddCarter();
 
